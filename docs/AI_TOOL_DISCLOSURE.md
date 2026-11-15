@@ -12,12 +12,19 @@ assignment. Specifically, it:
 - performed a code review pass, which found 12 issues; 11 were fixed and one was kept as a
   deliberate design choice (missing experience or education is scored as a gap, not raised as
   an eligibility flag);
-- designed and tested the interface in a browser at desktop and phone widths;
-- drafted the README, technical note, test evidence and requirements checklist.
+- built the interface to my direction on structure, colours and animation;
+- produced first drafts of the README, technical note, test evidence and requirements
+  checklist.
 
-My role was to set the requirements from the brief, direct the work and its revisions, review
-the output and run the application. I have read the code and can explain and modify any part
-of it.
+My role:
+
+- set the requirements from the brief and directed the work and its revisions, including the
+  product structure and the visual design;
+- tested the interface myself in a browser at desktop and phone widths;
+- reviewed and checked the README, technical note, test evidence and requirements checklist;
+- ran the application and the test suite.
+
+I have read the code and can explain and modify any part of it.
 
 No AI service is used by the application itself. The matching is rule-based and runs locally,
 so no profile data is sent to any model or third party.

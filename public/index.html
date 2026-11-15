@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Career Mobility Platform</title>
+    <script src="/js/theme.js"></script>
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="module" src="/js/main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="#/" aria-label="Career Mobility home">
+          <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="10.2" />
+            <path d="M16 8l-2.3 5.700L8 16l2.3-5.700z" />
+          </svg>
+          <span>Career Mobility</span>
+        </a>
+        <nav aria-label="Main">
+          <ul class="nav">
+            <li><a href="#/" data-nav="home">Discover</a></li>
+            <li><a href="#/jobs" data-nav="jobs">Jobs</a></li>
+            <li><a href="#/saved" data-nav="saved">Saved <span class="badge" id="shortlist-count" hidden>0</span></a></li>
+          </ul>
+        </nav>
+        <div class="header-tools">
+          <button type="button" class="icon-btn" id="theme-toggle" aria-label="Switch between light and dark theme">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z" fill="currentColor" /></svg>
+          </button>
+          <a href="#/profile" class="profile-link" data-nav="profile" id="profile-link">Create profile</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main" tabindex="-1">
+      <div class="container"><p class="muted loading">Loading…</p></div>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+    <footer class="site-footer">
+      <div class="container">
+        <span>Career Mobility Platform is a prototype using fictional sample data.</span>
+        <span>Fit scores are guidance only. Eligibility and work-authorisation notes are not legal determinations.</span>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -6,7 +6,7 @@
 assignment. Specifically, it:
 
 - generated the application code under my direction: the Express API, the matching engine,
-  the validation schemas, the JSON store and the frontend;
+  the validation schemas, the data stores, the hosting configuration and the frontend;
 - drafted the 12 fictional opportunities and the sample profile file from the brief;
 - wrote the automated tests and ran them;
 - performed a code review pass, which found 12 issues; 11 were fixed and one was kept as a
@@ -22,9 +22,8 @@ My role:
   product structure and the visual design;
 - tested the interface myself in a browser at desktop and phone widths;
 - reviewed and checked the README, technical note, test evidence and requirements checklist;
-- ran the application and the test suite.
-
-I have read the code and can explain and modify any part of it.
+- ran the application and the test suite;
+- set up the Vercel account and hosted the live demo on it.
 
 No AI service is used by the application itself. The matching is rule-based and runs locally,
 so no profile data is sent to any model or third party.

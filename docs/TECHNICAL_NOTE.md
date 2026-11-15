@@ -25,7 +25,9 @@ store.json (profile, shortlist)       opportunities.json (read-only)
 - **Matching engine** (`src/matching/`): deterministic functions with no I/O, unit-tested directly.
 - **Storage:** the opportunity catalogue is a JSON file validated at startup. Profile and
   shortlist are kept in `data/store.json` behind a small store module with atomic writes; that
-  module is where a database would plug in.
+  module is where a database would plug in. The hosted demo has no durable disk, so it swaps in a
+  second store with the same interface that keeps each visitor's data in their own HttpOnly
+  cookie, validated on every read.
 - **External services:** none. The project runs offline.
 
 ## Data model
@@ -99,7 +101,7 @@ rate limiting, and audit logs that exclude profile contents.
 
 ## Testing
 
-45 automated tests (`npm test`): matcher unit tests and API tests against the real app with a
+49 automated tests (`npm test`): matcher unit tests and API tests against the real app with a
 temporary store, plus manual browser checks. See [TEST_EVIDENCE.md](TEST_EVIDENCE.md).
 
 ## Trade-offs

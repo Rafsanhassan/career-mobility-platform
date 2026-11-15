@@ -5,6 +5,7 @@ import { join, dirname } from 'node:path';
 import { profileSchema, shortlistAddSchema, shortlistStatusSchema, formatIssues } from './validation/schemas.js';
 import { loadOpportunities, createOpportunityRepository } from './data/opportunityRepository.js';
 import { createStore } from './data/store.js';
+import { StoreLimitError } from './data/cookieStore.js';
 import { matchOpportunity, rankOpportunities } from './matching/matcher.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -35,9 +36,13 @@ export function createApp({
   opportunitiesPath = join(ROOT, 'data', 'opportunities.json'),
   storePath = join(ROOT, 'data', 'store.json'),
   sampleProfilePath = join(ROOT, 'data', 'sample-profile.json'),
+  // (req, res) => store. Defaults to one shared file store (local, single user);
+  // hosted demos pass a per-visitor cookie store instead.
+  storeFactory,
 } = {}) {
   const opportunities = createOpportunityRepository(loadOpportunities(opportunitiesPath));
-  const store = createStore(storePath);
+  let fileStore;
+  const storeFor = storeFactory ?? (() => (fileStore ??= createStore(storePath)));
   const sampleProfile = profileSchema.parse(JSON.parse(readFileSync(sampleProfilePath, 'utf8')));
 
   const app = express();
@@ -57,6 +62,7 @@ export function createApp({
   // Profile data is personal: never let intermediaries cache API responses.
   api.use((req, res, next) => {
     res.set('Cache-Control', 'no-store');
+    req.store = storeFor(req, res);
     next();
   });
 
@@ -65,41 +71,41 @@ export function createApp({
     if (!opp) throw new HttpError(404, 'not_found', `Opportunity "${id}" was not found.`);
     return opp;
   };
-  const requireProfile = () => {
-    const profile = store.getProfile();
+  const requireProfile = (req) => {
+    const profile = req.store.getProfile();
     if (!profile) throw new HttpError(409, 'profile_required', 'Create a profile first to see matches.');
     return profile;
   };
-  const shortlistedIds = () => new Set(store.getShortlist().map((s) => s.opportunityId));
+  const shortlistedIds = (req) => new Set(req.store.getShortlist().map((s) => s.opportunityId));
 
   api.get('/health', (req, res) => res.json({ status: 'ok', opportunities: opportunities.list().length }));
 
   // --- opportunities
   api.get('/opportunities', (req, res) => {
-    const saved = shortlistedIds();
+    const saved = shortlistedIds(req);
     res.json({ items: opportunities.list().map((o) => ({ ...o, shortlisted: saved.has(o.id) })) });
   });
   api.get('/opportunities/:id', (req, res) => {
     const opp = requireOpportunity(req.params.id);
-    res.json({ ...opp, shortlisted: shortlistedIds().has(opp.id) });
+    res.json({ ...opp, shortlisted: shortlistedIds(req).has(opp.id) });
   });
 
   // --- profile
-  api.get('/profile', (req, res) => res.json({ profile: store.getProfile() }));
+  api.get('/profile', (req, res) => res.json({ profile: req.store.getProfile() }));
   api.put('/profile', (req, res) => {
     const profile = parseOr400(profileSchema, req.body);
-    res.json({ profile: store.saveProfile(profile) });
+    res.json({ profile: req.store.saveProfile(profile) });
   });
   api.delete('/profile', (req, res) => {
-    store.deleteProfile();
+    req.store.deleteProfile();
     res.status(204).end();
   });
   api.get('/profile/sample', (req, res) => res.json({ profile: sampleProfile }));
 
   // --- matching
   api.get('/matches', (req, res) => {
-    const profile = requireProfile();
-    const saved = shortlistedIds();
+    const profile = requireProfile(req);
+    const saved = shortlistedIds(req);
     const results = rankOpportunities(profile, opportunities.list()).map((r) => ({
       ...r,
       shortlisted: saved.has(r.opportunity.id),
@@ -108,8 +114,8 @@ export function createApp({
   });
   api.get('/matches/:id', (req, res) => {
     const opp = requireOpportunity(req.params.id);
-    const profile = requireProfile();
-    res.json({ opportunity: opp, match: matchOpportunity(profile, opp), shortlisted: shortlistedIds().has(opp.id) });
+    const profile = requireProfile(req);
+    res.json({ opportunity: opp, match: matchOpportunity(profile, opp), shortlisted: shortlistedIds(req).has(opp.id) });
   });
   // Stateless matching: score a profile supplied in the request without storing it.
   api.post('/match', (req, res) => {
@@ -119,8 +125,8 @@ export function createApp({
 
   // --- shortlist
   api.get('/shortlist', (req, res) => {
-    const profile = store.getProfile();
-    const items = store
+    const profile = req.store.getProfile();
+    const items = req.store
       .getShortlist()
       .map((entry) => {
         const opportunity = opportunities.get(entry.opportunityId);
@@ -133,17 +139,17 @@ export function createApp({
   api.post('/shortlist', (req, res) => {
     const { opportunityId } = parseOr400(shortlistAddSchema, req.body);
     requireOpportunity(opportunityId);
-    const { entry, created } = store.addToShortlist(opportunityId);
+    const { entry, created } = req.store.addToShortlist(opportunityId);
     res.status(created ? 201 : 200).json({ entry });
   });
   api.patch('/shortlist/:id', (req, res) => {
     const { status } = parseOr400(shortlistStatusSchema, req.body);
-    const entry = store.setShortlistStatus(req.params.id, status);
+    const entry = req.store.setShortlistStatus(req.params.id, status);
     if (!entry) throw new HttpError(404, 'not_found', 'That opportunity is not on your shortlist.');
     res.json({ entry });
   });
   api.delete('/shortlist/:id', (req, res) => {
-    if (!store.removeFromShortlist(req.params.id)) {
+    if (!req.store.removeFromShortlist(req.params.id)) {
       throw new HttpError(404, 'not_found', 'That opportunity is not on your shortlist.');
     }
     res.status(204).end();
@@ -159,6 +165,9 @@ export function createApp({
   app.use((err, req, res, next) => {
     if (err instanceof HttpError) {
       return res.status(err.status).json({ error: err.code, message: err.message, issues: err.issues });
+    }
+    if (err instanceof StoreLimitError) {
+      return res.status(413).json({ error: 'profile_too_large', message: err.message });
     }
     if (err.type === 'entity.parse.failed') {
       return res.status(400).json({ error: 'invalid_json', message: 'Request body is not valid JSON.' });

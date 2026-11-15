@@ -84,7 +84,7 @@ loses location points (Bangladesh is not a preferred country).
 
 ## 3. Automated tests
 
-`npm test` runs 45 tests in 9 suites with Node's built-in test runner. Result: **45 passed, 0 failed.**
+`npm test` runs 49 tests in 10 suites with Node's built-in test runner. Result: **49 passed, 0 failed.**
 
 ```
 ▶ Required test cases (sample profile from the brief)
@@ -141,8 +141,13 @@ loses location points (Bangladesh is not a preferred country).
   ✔ API responses are not cacheable and carry security headers
 ▶ Data loading
   ✔ a malformed opportunity file fails fast with a clear message
-ℹ tests 45
-ℹ pass 45
+▶ Hosted demo mode (per-visitor cookie store)
+  ✔ full journey works with state carried in the cookie
+  ✔ visitors never see each other’s data
+  ✔ a tampered or invalid cookie is ignored, not trusted
+  ✔ a profile too large for a cookie is rejected with a clear message
+ℹ tests 49
+ℹ pass 49
 ℹ fail 0
 ```
 
@@ -168,3 +173,4 @@ exercise routing, validation, persistence and error handling end to end without 
 | Phone width (375 px) | List and detail become separate screens with a back link; no horizontal scroll on any page |
 | Light and dark themes | Both render correctly; the header toggle switches and remembers the choice |
 | Browser console | No errors |
+| Live demo | Home, profile save, ranked matches, save, mark as applied and reload all work on the hosted site; a second visitor sees an empty profile |

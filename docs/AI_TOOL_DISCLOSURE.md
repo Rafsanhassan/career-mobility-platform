@@ -39,4 +39,5 @@ so no profile data is sent to any model or third party.
 
 ## External APIs
 
-None. The project runs fully offline, with no external fonts, scripts or services.
+None are called by the application, which runs fully offline with no external fonts, scripts or
+services. The live demo is hosted on Vercel.

@@ -7,6 +7,8 @@ to make before applying. Roles can be opened, saved, compared and marked as appl
 
 All data is fictional.
 
+**Live demo:** https://career-mobility-platform-one.vercel.app
+
 | Document | Contents |
 | --- | --- |
 | [docs/TECHNICAL_NOTE.md](docs/TECHNICAL_NOTE.md) | Architecture, data model, matching method, trade-offs, limitations |
@@ -45,6 +47,14 @@ Open http://localhost:3000, go to **Create profile**, click **Load sample profil
 The saved profile and saved jobs live in `data/store.json`, created on first save and
 git-ignored. Delete it to reset the app.
 
+### Hosted demo
+
+The live demo runs on Vercel, which has no durable disk. There, each visitor's profile and
+saved jobs are kept in their own HttpOnly browser cookie (`src/data/cookieStore.js`), so the
+server is stateless and visitors never see each other's data. Everything read back from the
+cookie is validated again. The entry point is `api/index.js` and the hosting configuration is
+`vercel.json`; running locally with `npm start` is unaffected and uses the file store.
+
 ## The product
 
 | Page | Address | What it does |
@@ -76,7 +86,10 @@ src/
   validation/schemas.js   zod schemas for profile and opportunity data
   data/
     opportunityRepository.js   loads and validates the catalogue
-    store.js                   JSON-file store for profile and saved jobs
+    store.js                   JSON-file store for profile and saved jobs (local)
+    cookieStore.js             per-visitor cookie store (hosted demo)
+api/index.js              entry point for the hosted demo
+vercel.json               hosting configuration
 public/                   static frontend (HTML, CSS, ES modules; no build step)
   styles.css              design tokens, components, light and dark themes
   js/main.js              router, shared state, save button, theme toggle
@@ -128,6 +141,7 @@ to `src/matching/taxonomy.js`; no scoring code needs to change.
 | Node.js 22 | Runtime; built-in `node:test` for testing |
 | Express 4 | HTTP server and routing |
 | zod 3 | Input and data validation |
+| Vercel | Hosting for the live demo |
 
-No external APIs, fonts or paid services are used. The matching is fully rule-based and runs
+No external APIs, fonts or paid services are used by the application. The matching is fully rule-based and runs
 locally, so the project works offline.

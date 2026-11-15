@@ -57,7 +57,7 @@ Matching is entirely rule-based and runs locally with no external model or servi
 | Data | [TECHNICAL_NOTE.md](TECHNICAL_NOTE.md), Data model; `src/validation/schemas.js` |
 | Validation and errors | [TECHNICAL_NOTE.md](TECHNICAL_NOTE.md), Validation and errors; API tests |
 | Security and privacy | [TECHNICAL_NOTE.md](TECHNICAL_NOTE.md), Security and privacy; only fictional data is used |
-| Testing | `npm test` (45 tests); [TEST_EVIDENCE.md](TEST_EVIDENCE.md) |
+| Testing | `npm test` (49 tests); [TEST_EVIDENCE.md](TEST_EVIDENCE.md) |
 | Maintainability | Layered `src/` structure; setup in the [README](../README.md) |
 | External API with fallback | Not applicable: no external API is used |
 
@@ -65,7 +65,7 @@ Matching is entirely rule-based and runs locally with no external model or servi
 
 | Deliverable | Where |
 | --- | --- |
-| Working application | `npm install && npm start`, then http://localhost:3000 |
+| Working application | Live demo: https://career-mobility-platform-one.vercel.app. Locally: `npm install && npm start`, then http://localhost:3000 |
 | Source code with README | This folder; [README.md](../README.md) |
 | Technical note | [TECHNICAL_NOTE.md](TECHNICAL_NOTE.md) |
 | Test evidence (strong, partial, critical gap) | [TEST_EVIDENCE.md](TEST_EVIDENCE.md) |

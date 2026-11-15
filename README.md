@@ -66,8 +66,8 @@ cookie is validated again. The entry point is `api/index.js` and the hosting con
 | **Profile** | `#/profile` | Education, experience, skills, languages, preferred locations, career interests, enrolment and work authorisation, with a live profile-strength panel |
 
 The product works without a profile (browse and search), and becomes personalised once one is
-saved. The interface follows the system light or dark theme, with a toggle in the header, and
-adapts to phone widths, where the list and the detail become separate screens.
+saved. The interface opens in a light theme, with a dark theme available from the toggle in the
+header, and adapts to phone widths, where the list and the detail become separate screens.
 
 ## Project structure
 

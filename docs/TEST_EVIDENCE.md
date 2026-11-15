@@ -171,6 +171,6 @@ exercise routing, validation, persistence and error handling end to end without 
 | Rapid repeated clicks on Save | UI and server end in the same state |
 | Saved page | With three roles saved, the side-by-side table shows score, eligibility, each criterion and pay; "Mark as applied" adds the applied stamp and can be undone |
 | Phone width (375 px) | List and detail become separate screens with a back link; no horizontal scroll on any page |
-| Light and dark themes | Both render correctly; the header toggle switches and remembers the choice |
+| Light and dark themes | Opens light even when the device is set to dark; the header toggle switches to dark and remembers the choice |
 | Browser console | No errors |
 | Live demo | Home, profile save, ranked matches, save, mark as applied and reload all work on the hosted site; a second visitor sees an empty profile |

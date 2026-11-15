@@ -122,11 +122,10 @@ document.addEventListener('click', async (e) => {
   if (!saved && location.hash === '#/saved') route();
 });
 
-// Theme toggle: follows the system setting until the user picks one.
+// Theme toggle: the site opens light; the choice is remembered.
 document.getElementById('theme-toggle').addEventListener('click', () => {
   const root = document.documentElement;
-  const current = root.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  const next = current === 'dark' ? 'light' : 'dark';
+  const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
   root.dataset.theme = next;
   try {
     localStorage.setItem('theme', next);
